@@ -167,29 +167,33 @@ export function renderIndexPage(gateway, { itemCount, mobCount }) {
   <input id="q" type="search" placeholder="Buscar item ou monstro...">
   <ul id="results"></ul>
   <script>
-    let manifest = null;
-    fetch('manifest.json').then(r => r.json()).then(m => { manifest = m; });
+    let all = [];
 
     function escapeHtml(s) {
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    document.getElementById('q').addEventListener('input', (e) => {
-      const q = e.target.value.trim().toLowerCase();
+    function render(q) {
       const results = document.getElementById('results');
-      results.innerHTML = '';
-      if (!manifest || q.length < 2) return;
+      const filtered = q
+        ? all.filter(m => m.name.toLowerCase().includes(q))
+        : all;
 
-      const matches = [
-        ...manifest.items.filter(i => i.name.toLowerCase().includes(q)).map(i => ({ ...i, kind: 'item' })),
-        ...manifest.mobs.filter(m => m.name.toLowerCase().includes(q)).map(m => ({ ...m, kind: 'mob' })),
-      ].slice(0, 50);
+      results.innerHTML = filtered
+        .map(m => '<li><a href="' + m.kind + '/' + m.id + '/index.html">' + escapeHtml(m.name) + '</a> <span class="tag">' + m.kind + '</span></li>')
+        .join('');
+    }
 
-      for (const m of matches) {
-        const li = document.createElement('li');
-        li.innerHTML = '<a href="' + m.kind + '/' + m.id + '/index.html">' + escapeHtml(m.name) + '</a> <span class="tag">' + m.kind + '</span>';
-        results.appendChild(li);
-      }
+    fetch('manifest.json').then(r => r.json()).then((manifest) => {
+      all = [
+        ...manifest.items.map(i => ({ ...i, kind: 'item' })),
+        ...manifest.mobs.map(m => ({ ...m, kind: 'mob' })),
+      ].sort((a, b) => a.name.localeCompare(b.name));
+      render('');
+    });
+
+    document.getElementById('q').addEventListener('input', (e) => {
+      render(e.target.value.trim().toLowerCase());
     });
   </script>
 </body>
