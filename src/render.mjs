@@ -140,7 +140,11 @@ export function renderMobPage(gateway, mob) {
   return layout({ title: mob.name ?? `mob ${mob.id}`, gateway, body });
 }
 
-export function renderIndexPage(gateway, { itemCount, mobCount }) {
+export function renderIndexPage(gateway, { items, mobs }) {
+  // Embutido inline (em vez de fetch('manifest.json')) porque abrir o HTML
+  // direto com file:// bloqueia fetch entre arquivos locais por CORS.
+  const manifestJson = JSON.stringify({ items, mobs }).replace(/</g, '\\u003c');
+
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -163,11 +167,16 @@ export function renderIndexPage(gateway, { itemCount, mobCount }) {
 </head>
 <body>
   <h1>RagnaPlace DB — ${escapeHtml(gateway)}</h1>
-  <p>${itemCount} itens · ${mobCount} monstros (gerado estaticamente)</p>
+  <p>${items.length} itens · ${mobs.length} monstros (gerado estaticamente)</p>
   <input id="q" type="search" placeholder="Buscar item ou monstro...">
   <ul id="results"></ul>
   <script>
-    let all = [];
+    const manifest = ${manifestJson};
+
+    const all = [
+      ...manifest.items.map(i => ({ ...i, kind: 'item' })),
+      ...manifest.mobs.map(m => ({ ...m, kind: 'mob' })),
+    ].sort((a, b) => a.name.localeCompare(b.name));
 
     function escapeHtml(s) {
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -184,13 +193,7 @@ export function renderIndexPage(gateway, { itemCount, mobCount }) {
         .join('');
     }
 
-    fetch('manifest.json').then(r => r.json()).then((manifest) => {
-      all = [
-        ...manifest.items.map(i => ({ ...i, kind: 'item' })),
-        ...manifest.mobs.map(m => ({ ...m, kind: 'mob' })),
-      ].sort((a, b) => a.name.localeCompare(b.name));
-      render('');
-    });
+    render('');
 
     document.getElementById('q').addEventListener('input', (e) => {
       render(e.target.value.trim().toLowerCase());

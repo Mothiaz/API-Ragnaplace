@@ -129,7 +129,7 @@ async function main() {
   );
   await writeFile(
     join(gatewayDir, 'index.html'),
-    renderIndexPage(gateway, { itemCount: itemManifest.length, mobCount: mobManifest.length })
+    renderIndexPage(gateway, { items: itemManifest, mobs: mobManifest })
   );
 
   console.log(`\nPronto! Site gerado em ${gatewayDir}/`);
