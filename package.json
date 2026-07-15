@@ -1,0 +1,17 @@
+{
+  "name": "api-ragnaplace",
+  "version": "1.0.0",
+  "description": "Buscador de fontes de itens e calculadora de farm usando a RagnaPlace Public API.",
+  "type": "module",
+  "bin": {
+    "ragna-buscar": "./bin/buscar.mjs",
+    "ragna-farm": "./bin/farm.mjs"
+  },
+  "scripts": {
+    "buscar": "node bin/buscar.mjs",
+    "farm": "node bin/farm.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
