@@ -5,11 +5,13 @@
   "type": "module",
   "bin": {
     "ragna-buscar": "./bin/buscar.mjs",
-    "ragna-farm": "./bin/farm.mjs"
+    "ragna-farm": "./bin/farm.mjs",
+    "ragna-gerar-site": "./bin/gerar-site.mjs"
   },
   "scripts": {
     "buscar": "node bin/buscar.mjs",
-    "farm": "node bin/farm.mjs"
+    "farm": "node bin/farm.mjs",
+    "gerar-site": "node bin/gerar-site.mjs"
   },
   "engines": {
     "node": ">=18"

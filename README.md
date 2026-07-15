@@ -1,7 +1,8 @@
 # API-Ragnaplace
 
 Ferramentas de linha de comando sobre a [RagnaPlace Public API](https://ragnaplace.com/api):
-buscador de fontes de item e calculadora de eficiência de farm.
+buscador de fontes de item, calculadora de eficiência de farm e exportador de
+site estático (item + monstro).
 
 ## Setup
 
@@ -35,6 +36,27 @@ isso em vez de inventar um número de farm.
 ```bash
 npm run farm -- "Old Card Album"
 ```
+
+## Site estático (item + monstro)
+
+Gera um mini-site HTML puro (sem servidor, sem framework) com uma página por
+item e por monstro, mais um índice com busca client-side. Pensado pra
+hospedar de graça (GitHub Pages, Netlify) sem gastar rate limit em cada
+visita — os requests só acontecem uma vez, no momento da geração.
+
+```bash
+npm run gerar-site
+npm run gerar-site -- --gateway kro --out dist
+```
+
+**Limite importante:** o endpoint `/search` da API retorna no máximo 400
+resultados por tipo (20 páginas × 20/página), então o site gerado cobre os
+primeiros ~400 itens e ~400 monstros do gateway — não o catálogo completo.
+Cada item/monstro custa 1 request (sem chamadas extras em cascata), então o
+teto de 400 req/60s é tranquilo mesmo pro conjunto inteiro.
+
+O resultado fica em `dist/<gateway>/`: abra `dist/<gateway>/index.html` no
+navegador pra testar localmente, ou suba a pasta inteira num host estático.
 
 ## Rate limit
 
