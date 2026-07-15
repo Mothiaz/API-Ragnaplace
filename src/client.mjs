@@ -54,7 +54,9 @@ export class RagnaPlaceClient {
       } catch {
         // corpo não era JSON, mantém statusText
       }
-      throw new Error(`API respondeu ${res.status}: ${message}`);
+      const err = new Error(`API respondeu ${res.status}: ${message}`);
+      err.status = res.status;
+      throw err;
     }
 
     return res.json();

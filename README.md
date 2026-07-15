@@ -49,11 +49,23 @@ npm run gerar-site
 npm run gerar-site -- --gateway kro --out dist
 ```
 
-**Limite importante:** o endpoint `/search` da API retorna no máximo 400
-resultados por tipo (20 páginas × 20/página), então o site gerado cobre os
-primeiros ~400 itens e ~400 monstros do gateway — não o catálogo completo.
-Cada item/monstro custa 1 request (sem chamadas extras em cascata), então o
-teto de 400 req/60s é tranquilo mesmo pro conjunto inteiro.
+**Limite do `/search`:** por padrão (sem `--items`/`--mobs`) o gerador usa o
+`/search` da API, que retorna no máximo 400 resultados por tipo (20 páginas ×
+20/página) — cobre só os primeiros ~400 itens e ~400 monstros do gateway, não
+o catálogo completo.
+
+**Pra ir além de 400, passe os IDs direto** (pula o `/search`, busca cada ID
+individualmente e ignora silenciosamente os que não existem — é normal ter
+buracos numa faixa sequencial):
+
+```bash
+npm run gerar-site -- --items=501-30000 --mobs=1001-3000
+npm run gerar-site -- --items=501,502,510-520
+```
+
+Cada item/monstro custa só 1 request (sem chamadas extras em cascata), então
+mesmo faixas grandes ficam seguras com o throttle — só demoram mais (uma
+faixa de 20.000 IDs a 380 req/60s leva ~53 min).
 
 O resultado fica em `dist/<gateway>/`: abra `dist/<gateway>/index.html` no
 navegador pra testar localmente, ou suba a pasta inteira num host estático.
