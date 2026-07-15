@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { loadEnv } from '../src/env.mjs';
 import { RagnaPlaceClient } from '../src/client.mjs';
-import { resolveItem, classifySources } from '../src/sources.mjs';
+import { resolveItem, classifySources, itemDisplayName } from '../src/sources.mjs';
 import { parseArgs } from '../src/args.mjs';
 
 loadEnv();
@@ -43,7 +43,7 @@ async function main() {
     return;
   }
 
-  console.log(`=== ${item.name} (id ${item.id}) ===`);
+  console.log(`=== ${itemDisplayName(item)} (id ${item.id}) ===`);
   console.log(item.url);
   if (item.categories?.length) console.log(`Categorias: ${item.categories.join(', ')}`);
   console.log('');

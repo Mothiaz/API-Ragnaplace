@@ -1,3 +1,5 @@
+import { itemDisplayName } from './sources.mjs';
+
 export function escapeHtml(str) {
   if (str == null) return '';
   return String(str)
@@ -76,8 +78,10 @@ export function renderItemPage(gateway, item) {
       ? '<p class="warn">⚠️ Item não farmável de monstro em mapa aberto — veja quests/achievements/caixas abaixo.</p>'
       : '';
 
+  const displayName = itemDisplayName(item);
+
   const body = `
-    <h1>${item.image?.item ? `<img class="icon" src="${escapeHtml(item.image.item)}" alt="">` : ''}${escapeHtml(item.name)}</h1>
+    <h1>${item.image?.item ? `<img class="icon" src="${escapeHtml(item.image.item)}" alt="">` : ''}${escapeHtml(displayName)}</h1>
     <p class="meta">id ${item.id} · ${escapeHtml((item.categories ?? []).join(', ') || 'sem categoria')}</p>
     ${warn}
     <h2>Monstros que dropam</h2>
@@ -90,7 +94,7 @@ export function renderItemPage(gateway, item) {
     ${listLinks(boxes)}
   `;
 
-  return layout({ title: item.name ?? `item ${item.id}`, gateway, body });
+  return layout({ title: displayName, gateway, body });
 }
 
 export function renderMobPage(gateway, mob) {

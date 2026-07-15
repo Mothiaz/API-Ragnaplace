@@ -5,6 +5,7 @@ import { loadEnv } from '../src/env.mjs';
 import { RagnaPlaceClient } from '../src/client.mjs';
 import { parseArgs } from '../src/args.mjs';
 import { parseIdSpec } from '../src/idspec.mjs';
+import { itemDisplayName } from '../src/sources.mjs';
 import { renderItemPage, renderMobPage, renderIndexPage } from '../src/render.mjs';
 
 loadEnv();
@@ -82,7 +83,7 @@ async function main() {
       const dir = join(itemDir, String(item.id));
       await mkdir(dir, { recursive: true });
       await writeFile(join(dir, 'index.html'), renderItemPage(gateway, item));
-      itemManifest.push({ id: item.id, name: item.name ?? String(item.id) });
+      itemManifest.push({ id: item.id, name: itemDisplayName(item) });
     }
   } else {
     console.log('Listando itens via /search...');
@@ -93,7 +94,7 @@ async function main() {
       const dir = join(itemDir, String(item.id));
       await mkdir(dir, { recursive: true });
       await writeFile(join(dir, 'index.html'), renderItemPage(gateway, item));
-      itemManifest.push({ id: item.id, name: item.name ?? ref.name ?? String(item.id) });
+      itemManifest.push({ id: item.id, name: itemDisplayName(item) });
       if ((i + 1) % 50 === 0) console.log(`  ${i + 1}/${itemRefs.length}`);
     }
   }

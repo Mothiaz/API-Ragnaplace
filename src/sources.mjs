@@ -17,6 +17,15 @@ function looksLikeInstance(...tagLists) {
 }
 
 /**
+ * O campo `name` de um item completo costuma ser o identificador cru
+ * ("Fruit_Of_Mastela"). `identifiedDisplayName` é o nome de exibição de
+ * verdade quando o servidor preenche esse campo — prefira ele.
+ */
+export function itemDisplayName(item) {
+  return item.identifiedDisplayName || item.name || `item ${item.id}`;
+}
+
+/**
  * Busca o item pelo nome e resolve pro id mais provável.
  * Retorna { item, alternatives } onde alternatives são outros resultados da busca.
  */
